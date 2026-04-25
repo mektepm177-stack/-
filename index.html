@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<title>Ғарыш бағалау PRO</title>
+
+<style>
+body {
+    margin: 0;
+    background: black;
+    color: white;
+    font-family: Arial;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    padding: 10px;
+}
+
+/* CARD */
+.card {
+    position: relative;
+    height: 230px;
+    background: radial-gradient(circle, #000 60%, #020024);
+    border: 1px solid #222;
+    overflow: hidden;
+}
+
+/* ⭐ ЖҰЛДЫЗ */
+.star-bg {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    opacity: 0.8;
+}
+
+/* ⭐ LABEL */
+.star-label {
+    position: absolute;
+    left: 5px;
+    font-size: 12px;
+}
+.star1 { bottom: 10px; }
+.star2 { bottom: 90px; }
+.star3 { bottom: 170px; }
+
+.active {
+    color: gold;
+    font-weight: bold;
+}
+
+/* 🚀 */
+.rocket {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 22px;
+    transition: 0.3s;
+}
+
+/* 🔥 FIRE */
+.fire {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -10px;
+    font-size: 14px;
+    opacity: 0;
+}
+
+.burn {
+    animation: flame 0.3s infinite alternate;
+    opacity: 1;
+}
+
+@keyframes flame {
+    from { transform: translateX(-50%) scale(1); }
+    to { transform: translateX(-50%) scale(1.3); }
+}
+
+/* INPUT */
+input {
+    width: 100%;
+    font-size: 12px;
+}
+
+/* BUTTONS */
+.buttons {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+button {
+    width: 50%;
+    font-size: 10px;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="grid" id="grid"></div>
+
+<script>
+
+/* 🔊 ДЫБЫС */
+let upSound = new Audio("https://www.soundjay.com/buttons/sounds/button-09.mp3");
+let downSound = new Audio("https://www.soundjay.com/buttons/sounds/button-10.mp3");
+
+/* ⭐ фон жұлдыздары */
+function createStars(card) {
+    for (let i = 0; i < 15; i++) {
+        let s = document.createElement("div");
+        s.className = "star-bg";
+        s.style.top = Math.random()*100+"%";
+        s.style.left = Math.random()*100+"%";
+        card.appendChild(s);
+    }
+}
+
+/* 15 карточка */
+for (let i = 0; i < 15; i++) {
+
+    let card = document.createElement("div");
+    card.className = "card";
+
+    let input = document.createElement("input");
+    input.placeholder = "Атыңды жаз";
+
+    /* ⭐ */
+    let s1 = document.createElement("div");
+    s1.className = "star-label star1";
+    s1.innerText = "⭐";
+
+    let s2 = document.createElement("div");
+    s2.className = "star-label star2";
+    s2.innerText = "⭐⭐";
+
+    let s3 = document.createElement("div");
+    s3.className = "star-label star3";
+    s3.innerText = "⭐⭐⭐";
+
+    /* 🚀 */
+    let rocket = document.createElement("div");
+    rocket.className = "rocket";
+    rocket.innerText = "🚀";
+
+    /* 🔥 */
+    let fire = document.createElement("div");
+    fire.className = "fire";
+    fire.innerText = "🔥";
+
+    rocket.appendChild(fire);
+
+    let height = 10;
+
+    /* BUTTON */
+    let btns = document.createElement("div");
+    btns.className = "buttons";
+
+    let up = document.createElement("button");
+    up.innerText = "👍";
+
+    let down = document.createElement("button");
+    down.innerText = "👎";
+
+    function updateStars() {
+        s1.classList.remove("active");
+        s2.classList.remove("active");
+        s3.classList.remove("active");
+
+        if (height < 70) s1.classList.add("active");
+        else if (height < 140) s2.classList.add("active");
+        else s3.classList.add("active");
+    }
+
+    function burnEffect() {
+        fire.classList.add("burn");
+        setTimeout(() => fire.classList.remove("burn"), 500);
+    }
+
+    up.onclick = () => {
+        height += 15;
+        if (height > 180) height = 180;
+
+        rocket.style.bottom = height + "px";
+        updateStars();
+        burnEffect();
+        upSound.play();
+    };
+
+    down.onclick = () => {
+        height -= 15;
+        if (height < 10) height = 10;
+
+        rocket.style.bottom = height + "px";
+        updateStars();
+        downSound.play();
+    };
+
+    btns.appendChild(up);
+    btns.appendChild(down);
+
+    card.appendChild(input);
+    card.appendChild(s1);
+    card.appendChild(s2);
+    card.appendChild(s3);
+    card.appendChild(rocket);
+    card.appendChild(btns);
+
+    createStars(card);
+
+    document.getElementById("grid").appendChild(card);
+
+    updateStars();
+}
+
+</script>
+
+</body>
+</html>
